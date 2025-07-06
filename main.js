@@ -7,7 +7,7 @@ const road = new Road(canvas.width/2,canvas.width * 0.9);
 // const car = new Car(100,100,30,50); // (x,y,width,height)
 const car = new Car(road.getLaneCenter(1),100,30,50); // dynamically getting the x coord of the car according to the laneCenter function, laneIndex is passed
 
-car.draw(ctx);
+// car.draw(ctx);
 
 animate();
 

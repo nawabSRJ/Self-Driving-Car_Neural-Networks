@@ -11,10 +11,16 @@ class Car {
     this.maxSpeed = 3;
     this.friction = 0.05;
     this.angle = 0;
+
+    this.sensor = new Sensor(this);
+    // console.log(`Car here : `,this);
+    // console.log(`sensor here : `,this.sensor)
+    // console.log(`sensor here update : `,this.sensor.update)
     this.controls = new Controls(); // for controlling the car
   }
   update() {
     this.#move();
+    this.sensor.update();
   }
   #move() {
     if (this.controls.forward) {
@@ -55,7 +61,6 @@ class Car {
     this.x -= Math.sin(this.angle) * this.speed;
     this.y -= Math.cos(this.angle) * this.speed;
   }
-
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -65,5 +70,6 @@ class Car {
     ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
     ctx.fill();
     ctx.restore();
+    this.sensor.draw(ctx);
   }
 }
