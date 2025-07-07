@@ -18,9 +18,9 @@ class Car {
     // console.log(`sensor here update : `,this.sensor.update)
     this.controls = new Controls(); // for controlling the car
   }
-  update() {
+  update(roadBorders) {
     this.#move();
-    this.sensor.update();
+    this.sensor.update(roadBorders);
   }
   #move() {
     if (this.controls.forward) {
