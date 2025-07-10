@@ -1,20 +1,25 @@
 class Car {
   // for car to know where it is (x,y) and how big it is (width,height)
-  constructor(x, y, width, height, controlType, maxSpeed=3) {
+  constructor(x, y, width, height, controlType, maxSpeed=5) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
 
     this.speed = 0;
-    this.acceleration = 0.2;
+    this.acceleration = 0.8;
     this.maxSpeed = maxSpeed;
     this.friction = 0.05;
     this.angle = 0;
     this.damaged=false;
 
+    this.useBrain=controlType==="AI";
+
     if(controlType!="DUMMY"){
       this.sensor = new Sensor(this);
+      this.brain=new NeuralNetwork(
+        [this.sensor.rayCount,6,4]  // 6-hidden layer neurons, 4 - output layer neurons (forward,backward,left,right)
+      );
     }
 
     this.controls = new Controls(controlType); // for controlling the car
@@ -28,6 +33,16 @@ class Car {
     }
     if(this.sensor){
       this.sensor.update(roadBorders,traffic); // sensor work even after damage
+      const offsets = this.sensor.readings.map(s=>s==null?0:1-s.offset);
+      const outputs = NeuralNetwork.feedForward(offsets,this.brain); // breaks at this line, why?
+      // console.log(outputs); 
+
+      if(this.useBrain){
+        this.controls.forward=outputs[0];  
+        this.controls.left=outputs[1];
+        this.controls.right=outputs[2];
+        this.controls.reverse=outputs[3];
+      }
     }
   }
 
@@ -111,7 +126,7 @@ class Car {
     this.x -= Math.sin(this.angle) * this.speed;
     this.y -= Math.cos(this.angle) * this.speed;
   }
-  draw(ctx,color) {
+  draw(ctx,color,drawSensor=false) {
     if(this.damaged){
       ctx.fillStyle="gray";
     }else{
@@ -124,7 +139,7 @@ class Car {
     }
     ctx.fill();
 
-    if(this.sensor){
+    if(this.sensor && drawSensor){
       this.sensor.draw(ctx);
     }
   }

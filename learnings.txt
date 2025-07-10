@@ -1,0 +1,4 @@
+Neurons will receive hight values (closer to 1) if obstacle is close and low values if the obstacle if far away
+
+Math.min() does not work with arrays, it just works with multiple individual values and thus we need to spread the array in the args
+
